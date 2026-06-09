@@ -198,29 +198,143 @@
             pointer-events: all;
         }
 
-        .golden-book {
-            width: 120px;
-            height: 160px;
-            background: linear-gradient(145deg, #d4af77, #b8975e);
-            border: 8px solid #f0d78c;
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 
-                0 0 30px #d4af77,
-                0 0 60px #d4af77,
-                0 20px 40px rgba(0,0,0,0.6);
-            animation: book-glow 1.5s ease-in-out infinite alternate;
-        }
+        .magic-book{
+    position:relative;
+    width:220px;
+    height:150px;
+    perspective:1500px;
+}
 
-        .golden-book.open {
-            animation: book-open 0.8s forwards;
-        }
+.book-cover{
+    position:absolute;
+    top:0;
+    width:50%;
+    height:100%;
 
-        @keyframes book-glow {
-            from { box-shadow: 0 0 30px #d4af77, 0 0 60px #d4af77; }
-            to { box-shadow: 0 0 50px #f0d78c, 0 0 90px #f0d78c; }
-        }
+    background:
+    linear-gradient(
+        135deg,
+        #f6e0a6,
+        #d4af77,
+        #b8893c
+    );
 
+    border:3px solid #f5d98d;
+
+    box-shadow:
+    0 0 20px rgba(212,175,119,.7);
+
+    transform-style:preserve-3d;
+}
+
+.left-cover{
+    left:0;
+    transform-origin:right center;
+}
+
+.right-cover{
+    right:0;
+    transform-origin:left center;
+}
+
+.book-pages{
+    position:absolute;
+    left:50%;
+    top:8px;
+    transform:translateX(-50%);
+    width:92%;
+    height:90%;
+
+    background:
+    repeating-linear-gradient(
+        90deg,
+        #fffdf5,
+        #fffdf5 2px,
+        #f7f1df 2px,
+        #f7f1df 4px
+    );
+
+    border-radius:4px;
+}
+
+.light-beam{
+    position:absolute;
+    left:50%;
+    top:50%;
+
+    width:10px;
+    height:10px;
+
+    border-radius:50%;
+    background:#fff7c8;
+
+    transform:translate(-50%,-50%);
+    opacity:0;
+}
+.left-cover.open{
+    animation:openLeft 1.2s forwards;
+}
+
+.right-cover.open{
+    animation:openRight 1.2s forwards;
+}
+
+@keyframes openLeft{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(-140deg);
+    }
+}
+
+@keyframes openRight{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(140deg);
+    }
+}
+
+.light-beam.active{
+    animation:beamBurst 1.4s forwards;
+}
+
+@keyframes beamBurst{
+
+    0%{
+        opacity:0;
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    50%{
+
+        width:350px;
+        height:350px;
+
+        box-shadow:
+        0 0 50px #fff6c0,
+        0 0 120px #f6d675,
+        0 0 250px #d4af77;
+    }
+
+    100%{
+
+        width:1500px;
+        height:1500px;
+
+        opacity:1;
+
+        box-shadow:
+        0 0 150px #fff6c0,
+        0 0 400px #f6d675,
+        0 0 800px #d4af77;
+    }
+}
         .spark {
             position: absolute;
             width: 4px;
@@ -483,10 +597,16 @@
     <!-- Magical Book Transition -->
     <div id="realm-transition" class="realm-transition">
         <div class="relative flex flex-col items-center">
-            <div id="magic-book" class="golden-book mb-6">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="text-[#0a1428] text-5xl font-bold tracking-widest">NOX</div>
-                </div>
+            <div id="magic-book" class="magic-book mb-6">
+
+    <div class="book-cover left-cover"></div>
+
+    <div class="book-pages"></div>
+
+    <div class="book-cover right-cover"></div>
+
+    <div class="light-beam"></div>
+
             </div>
             <div class="text-center">
                 <div class="text-2xl font-bold text-[#d4af77] mb-1">The stars align...</div>
@@ -513,12 +633,24 @@
 
             const transition = document.getElementById('realm-transition');
             const book = document.getElementById('magic-book');
+            const leftCover =
+document.querySelector('.left-cover');
+
+const rightCover =
+document.querySelector('.right-cover');
+
+const beam =
+document.querySelector('.light-beam');
             
             transition.classList.add('active');
             
             setTimeout(() => {
-                book.classList.add('open');
-                createSparks(book);
+                leftCover.classList.add('open');
+rightCover.classList.add('open');
+
+setTimeout(() => {
+    beam.classList.add('active');
+}, 900);
                 
                 setTimeout(() => {
                     transition.style.background = 'radial-gradient(circle, #fff8e1 10%, #0a1428 70%)';
@@ -534,7 +666,9 @@
                             document.getElementById('settings-name').innerHTML = name;
                             
                             transition.classList.remove('active');
-                            book.classList.remove('open');
+                            leftCover.classList.remove('open');
+rightCover.classList.remove('open');
+beam.classList.remove('active');
                             transition.style.background = 'radial-gradient(circle at center, #0a1428 30%, #000000 85%)';
                         }, 600);
                     }, 900);
@@ -551,12 +685,23 @@
 
             const transition = document.getElementById('realm-transition');
             const book = document.getElementById('magic-book');
-            
+            const leftCover =
+document.querySelector('.left-cover');
+
+const rightCover =
+document.querySelector('.right-cover');
+
+const beam =
+document.querySelector('.light-beam');
             transition.classList.add('active');
             
             setTimeout(() => {
-                book.classList.add('open');
-                createSparks(book);
+                leftCover.classList.add('open');
+rightCover.classList.add('open');
+
+setTimeout(() => {
+    beam.classList.add('active');
+}, 900);
                 
                 setTimeout(() => {
                     transition.style.background = 'radial-gradient(circle, #fff8e1 10%, #0a1428 70%)';
@@ -570,7 +715,9 @@
                             document.getElementById('settings-name').innerHTML = first;
                             
                             transition.classList.remove('active');
-                            book.classList.remove('open');
+                            leftCover.classList.remove('open');
+rightCover.classList.remove('open');
+beam.classList.remove('active');
                             transition.style.background = 'radial-gradient(circle at center, #0a1428 30%, #000000 85%)';
                         }, 600);
                     }, 900);
